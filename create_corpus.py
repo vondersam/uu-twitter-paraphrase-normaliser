@@ -5,35 +5,41 @@ import json
 import csv
 
 
-""" Designed to build a cleaned, monolingual corpus iteratively """
+""" Build a cleaned, monolingual corpus iteratively """
 
 
-def corpus_size(old_size, new_size):
+def corpus_size(ouput_directory):
     ''' Calculate corpus size '''
-    pass
-
-
-def load_previous_info(output_directory):
-    ''' Load last size of corpus and files processed '''
-    size = {"Corpus files": 0,
-            "Corpus size": 0,
-            "Number of tweets": 0,
-             }
-    info = []
-
-    for filename in ["size.json", "tracker.json"]:
-        path = output_directory + filename
-        try:
+    counter = 0
+    files_list = listdir(ouput_directory)
+    files_counter = len(files_list)
+    for filename in files_list:
+        if filename != "tracker.json":
+            path = ouput_directory + filename
+            files_counter -= 1
             with open(path, 'r') as f:
-                info.append(json.loads(f.read()))
-        except:
-            with open(path, 'w') as f:
-                if filename == "size.json":
-                    info.append(size)
-                else:
-                    info.append(dict())
-    return info
+                for tweet in csv.reader(f):
+                    counter += 1
+    return counter
 
+
+
+def load_tracker(output_directory):
+    ''' Load tracker with filenames processed '''
+    path = output_directory + "tracker.json"
+    try:
+        with open(path, 'r') as f:
+            return json.loads(f.read())
+    except:
+        with open(path, 'w') as f:
+            return dict()
+
+
+def save_tracker(output_directory, tracker):
+    ''' Save tracker with filenames processed '''
+    path = output_directory + "tracker.json"
+    with open(path, 'w') as f:
+        json.dump(tracker, f)
 
 
 def get_ouput_filenames(filename):
@@ -43,19 +49,8 @@ def get_ouput_filenames(filename):
     return output, output_foreign
 
 
-def save_previous_info(output_directory, size, tracker):
-    ''' Save last size of corpus and files processed '''
-    for filename in ["size.json", "tracker.json"]:
-        path = output_directory + filename
-        with open(path, 'w') as f:
-            if filename == "size.json":
-                json.dump(size, f)
-            else:
-                json.dump(tracker, f)
-
-
 def create_corpus(input_directory, output_directory, language):
-    size, tracker = load_previous_info(output_directory)
+    tracker = load_tracker(output_directory)
 
     for filename in listdir(input_directory):
         print(f"Extracting tweets from {filename}")
@@ -63,13 +58,13 @@ def create_corpus(input_directory, output_directory, language):
             tracker[filename] = None
             filepath = input_directory + filename
 
-            # Input
+            # Input files
             with open(filepath, 'r') as input_file:
                 output_filename, output_filename_foreign = get_ouput_filenames(filename)
                 output_filename_path = output_directory + output_filename
                 output_filename_foreign_path = output_directory + output_filename_foreign
 
-                # Output
+                # Output files
                 with open(output_filename_path, 'w') as output_file:
                     output_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -82,12 +77,15 @@ def create_corpus(input_directory, output_directory, language):
 
                         for line in input_file:
                             data = json.loads(line)
-                            if detect(data["text"]) == language:
-                                output_writer.writerow([data["id"], data["text"]])
-                                size["Number of tweets"] += 1
-                            else:
-                                output_writer_foreign.writerow([data["id"], data["text"]])
-    save_previous_info(output_directory, size, tracker)
+                            try:
+                                if detect(data["text"]) == language:
+                                    output_writer.writerow([data["id"], data["text"]])
+                                else:
+                                    output_writer_foreign.writerow([data["id"], data["text"]])
+                            except:
+                                print(data["text"])
+
+    save_tracker(output_directory, tracker)
     print("Process finished")
 
 
@@ -96,3 +94,4 @@ if __name__ == "__main__":
     original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus-test/"
     final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
     create_corpus(original_corpus, final_corpus, "es")
+    print(f"The corpus has {corpus_size(final_corpus)} tweets")
