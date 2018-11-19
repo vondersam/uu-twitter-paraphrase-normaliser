@@ -23,7 +23,6 @@ def corpus_size(ouput_directory):
     return counter
 
 
-
 def load_tracker(output_directory):
     ''' Load tracker with filenames processed '''
     path = output_directory + "tracker.json"
@@ -47,6 +46,14 @@ def get_ouput_filenames(filename):
     output = root + ".csv"
     output_foreign = root + "_foreign.csv"
     return output, output_foreign
+
+
+def extract_id_text(tweet):
+    if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
+        return tweet["id"], tweet["retweeted_status"]["extended_tweet"]["full_text"]
+    else:
+        return tweet["id"], tweet["text"]
+
 
 
 def create_corpus(input_directory, output_directory, language):
@@ -76,22 +83,26 @@ def create_corpus(input_directory, output_directory, language):
                         output_writer_foreign.writerow(['id', 'tweet'])
 
                         for line in input_file:
-                            data = json.loads(line)
+                            #data =json.loads(line)
+                            #print(json.dumps(data))
+                            _id, text = extract_id_text(json.loads(line))
+                            #print(text)
                             try:
-                                if detect(data["text"]) == language:
-                                    output_writer.writerow([data["id"], data["text"]])
-                                else:
-                                    output_writer_foreign.writerow([data["id"], data["text"]])
-                            except:
-                                print(data["text"])
+                                if detect(text) == language:
 
-    save_tracker(output_directory, tracker)
+                                    output_writer.writerow([_id, text])
+                                else:
+                                    output_writer_foreign.writerow([_id, text])
+                            except:
+                                print(text)
+
+        save_tracker(output_directory, tracker)
     print("Process finished")
 
 
 
 if __name__ == "__main__":
-    original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus-test/"
+    original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus/"
     final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
     create_corpus(original_corpus, final_corpus, "es")
     print(f"The corpus has {corpus_size(final_corpus)} tweets")
