@@ -4,18 +4,18 @@ from os import listdir, path
 import json
 import csv
 
-
 """ Build a cleaned, monolingual corpus iteratively """
 
 
-def corpus_size(ouput_directory):
-    ''' Calculate corpus size '''
+def corpus_size(ouput_dir):
+    ''' Calculate number of tweets in a directory '''
+    print("Calculating the size of the corpus...")
     counter = 0
-    files_list = listdir(ouput_directory)
+    files_list = listdir(ouput_dir)
     files_counter = len(files_list)
     for filename in files_list:
         if filename != "tracker.json":
-            path = ouput_directory + filename
+            path = ouput_dir + filename
             files_counter -= 1
             with open(path, 'r') as f:
                 for tweet in csv.reader(f):
@@ -23,9 +23,9 @@ def corpus_size(ouput_directory):
     return counter
 
 
-def load_tracker(output_directory):
+def load_tracker(output_dir):
     ''' Load tracker with filenames processed '''
-    path = output_directory + "tracker.json"
+    path = output_dir + "tracker.json"
     try:
         with open(path, 'r') as f:
             return json.loads(f.read())
@@ -34,14 +34,15 @@ def load_tracker(output_directory):
             return dict()
 
 
-def save_tracker(output_directory, tracker):
+def save_tracker(output_dir, tracker):
     ''' Save tracker with filenames processed '''
-    path = output_directory + "tracker.json"
+    path = output_dir + "tracker.json"
     with open(path, 'w') as f:
         json.dump(tracker, f)
 
 
 def get_ouput_filenames(filename):
+    ''' Create output filenames '''
     root = path.splitext(filename)[0]
     output = root + ".csv"
     output_foreign = root + "_foreign.csv"
@@ -49,6 +50,7 @@ def get_ouput_filenames(filename):
 
 
 def extract_id_text(tweet):
+    ''' Extract text and id from tweets '''
     if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
         return tweet["id"], tweet["retweeted_status"]["extended_tweet"]["full_text"]
     else:
@@ -56,20 +58,21 @@ def extract_id_text(tweet):
 
 
 
-def create_corpus(input_directory, output_directory, language):
-    tracker = load_tracker(output_directory)
+def clean_corpus(input_dir, output_dir, language):
+    ''' Separates corpora given a language '''
+    tracker = load_tracker(output_dir)
 
-    for filename in listdir(input_directory):
+    for filename in listdir(input_dir):
         print(f"Extracting tweets from {filename}")
         if filename not in tracker:
             tracker[filename] = None
-            filepath = input_directory + filename
+            filepath = input_dir + filename
 
             # Input files
             with open(filepath, 'r') as input_file:
                 output_filename, output_filename_foreign = get_ouput_filenames(filename)
-                output_filename_path = output_directory + output_filename
-                output_filename_foreign_path = output_directory + output_filename_foreign
+                output_filename_path = output_dir + output_filename
+                output_filename_foreign_path = output_dir + output_filename_foreign
 
                 # Output files
                 with open(output_filename_path, 'w') as output_file:
@@ -83,10 +86,7 @@ def create_corpus(input_directory, output_directory, language):
                         output_writer_foreign.writerow(['id', 'tweet'])
 
                         for line in input_file:
-                            #data =json.loads(line)
-                            #print(json.dumps(data))
                             _id, text = extract_id_text(json.loads(line))
-                            #print(text)
                             try:
                                 if detect(text) == language:
 
@@ -96,7 +96,7 @@ def create_corpus(input_directory, output_directory, language):
                             except:
                                 print(text)
 
-        save_tracker(output_directory, tracker)
+        save_tracker(output_dir, tracker)
     print("Process finished")
 
 
@@ -104,5 +104,5 @@ def create_corpus(input_directory, output_directory, language):
 if __name__ == "__main__":
     original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus/"
     final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
-    create_corpus(original_corpus, final_corpus, "es")
+    clean_corpus(original_corpus, final_corpus, "es")
     print(f"The corpus has {corpus_size(final_corpus)} tweets")
