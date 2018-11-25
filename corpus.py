@@ -1,15 +1,22 @@
 class Corpus:
     def __init__(self):
+        # ID + Tweet
         self.tweets = {}
 
     def extract_paraphrases(self):
         pass
 
     def get_tweet(self, _id):
-        pass
+        return self.tweets[_id]
 
-    def add_tweet(self, id, tweet):
-        pass
+    def get_id(self, tweet):
+        for key, value in self.tweets.items():
+            if value == tweet:
+                return key
+
+    def add_tweet(self, _id, tweet):
+        if _id not in self.tweets:
+            self.tweets[_id] = tweet
 
     def filter_all_tweets(self, *args):
         pass

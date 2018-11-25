@@ -6,8 +6,7 @@ nlp = spacy.load('es_core_news_md')
 
 
 class Tweet:
-    def __init__(self, _id, text):
-        self.id = _id
+    def __init__(self, text):
         self.raw_text = text
         self.clean_text = None
         self.doc = None
@@ -45,17 +44,13 @@ class Tweet:
 
 
     def spacyfy(self, *args):
-        """ Create and saves a spacy doc of the tweet. Chose 'raw' or 'clean' text """
+        """ Create and saves a spacy doc of the tweet. Choose 'raw' or 'clean' """
         if "raw" in args:
-            self.doc = nlp(self.raw_text)
+            return nlp(self.raw_text)
         if "clean" in args:
-            self.clean_text = self.filter(args)
-            print(self.clean_text)
-            self.doc = nlp(self.clean_text)
-        return self.doc
-
-
-
+            print(args)
+            return self.filter(*args)
+            #return nlp(self.filter(args))
 
 # feature engineering
 # time sleep
