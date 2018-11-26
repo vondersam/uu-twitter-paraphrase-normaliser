@@ -35,7 +35,8 @@ def extract_id_text(tweet):
 def clean_corpus(input_dir, output_dir, language, foreign=False):
     ''' Separates corpora given a language '''
     #WE MIGH WANT TO CHANGE THE FORMAT OF OUTPUT TO JSON SINCE ITS FASTER TO EXTRACT TWEETS BY ID
-    tracker, inv_tracker = load_tracker(output_dir, )
+    tracker = load_tracker(output_dir, "cleaning", "tracker.json")
+    inv_tracker = load_tracker(output_dir, "cleaning", "inv_tracker.json")
 
     for filename in listdir(input_dir, "cleaning"):
         print(f"Extracting tweets from {filename}")
@@ -74,7 +75,7 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                                     inv_tracker[_id] = output_filename
 
                             else:
-                                # Save foreign
+                                # Write foreign text to another file
                                 if foreign:
                                     output_writer_foreign.writerow([_id, text])
                         except:
@@ -82,15 +83,12 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                     if foreign:
                         output_file_foreign.close()
 
-        save_tracker(output_dir, tracker, inv_tracker)
-    print("Process finished")
+        save_tracker(output_dir, "cleaning", "tracker.json", tracker)
+        save_tracker(output_dir, "cleaning", "inv_tracker.json", inv_tracker)
+    print("All tweets extracted")
     return inv_tracker
 
 
 
 if __name__ == "__main__":
     main()
-    #original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus/"
-    #final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
-    #clean_corpus(original_corpus, final_corpus, "es")
-    #print(f"The corpus has {corpus_size(final_corpus)} tweets")

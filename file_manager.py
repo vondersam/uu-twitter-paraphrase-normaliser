@@ -1,29 +1,27 @@
 from os import path, makedirs
 import json
 
-def load_tracker(output_dir, subdir):
+def load_tracker(output_dir, subdir, name):
     ''' Load tracker with filenames processed '''
     # Create output_dir if not exist
-    if not path.exists(output_dir):
+    directory = output_dir + f"/{subdir}/"
+    if not path.exists(directory):
         makedirs(output_dir)
 
-    tracker_path = output_dir + subdir + "/tracker.json"
-    inv_tracker_path = output_dir + subdir + "inverted_tracker.json"
+    filepath = directory + name
     try:
-        with open(tracker_path, 'r') as f, open(inv_tracker_path, 'r') as inv_f:
-            return json.loads(f.read()), json.loads(inv_f.read())
+        with open(filepath, 'r') as f:
+            return json.loads(f.read())
     except:
-        with open(tracker_path, 'w') as f, open(inv_tracker_path, 'w') as inv_f:
-            return {}, {}
+        with open(filepath, 'w') as f:
+            return {}
 
 
-def save_tracker(output_dir, tracker, inv_tracker, subdir):
+def save_tracker(output_dir, subdir, name, tracker):
     ''' Save tracker with filenames processed '''
-    tracker_path = output_dir + subdir + "/tracker.json"
-    inv_tracker_path = output_dir + subdir + "inverted_tracker.json"
-    with open(tracker_path, 'w') as f, open(inv_tracker_path, 'w') as inv_f:
+    filepath = output_dir + f"{name}"
+    with open(filepath, 'w') as f
         json.dump(tracker, f)
-        json.dump(inv_tracker, inv_f)
 
 
 def get_ouput_filenames(filename):
