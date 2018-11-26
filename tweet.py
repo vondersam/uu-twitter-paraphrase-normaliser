@@ -16,6 +16,7 @@ class Tweet:
         """ Apply optional filters 'retweets', 'emoticons', 'handles', 'urls', 'hashtags' and '*' """
         exps = []
 
+        #this ones can be improved. some are not getting extracted
         if "retweets" in args:
             exps.append(re.compile("^RT ?(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+):"))
         if "emoticons" in args:

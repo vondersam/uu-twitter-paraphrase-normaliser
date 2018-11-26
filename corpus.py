@@ -65,11 +65,10 @@ class Corpus:
 
         for entity, id_list in grouped_entities.items():
             tweets_list = self.get_tweets_by_ids(id_list, input_directory, inverted_tracker)
-            ner, paraphrases = calculate_similarity(tweets_list, threshold)
+            paraphrases = calculate_similarity(tweets_list, threshold)
             results[ner] = paraphrases
 
         paraphrases_path = input_directory + "paraphrases.json"
 
         with open("paraphrases_path", 'w') as fout:
             json.dump(results, fout)
-

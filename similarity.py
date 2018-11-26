@@ -1,20 +1,20 @@
+from itertools import combinations
+
 def calculate_similarity(docs_list, threshold):
     ''' Calculate similarity of all possible pairs in list '''
     results = list()
-    all_combinations = list(itertools.combinations(docs_list, 2))
+
+    # Get all possible combinations of tweets that have same NER
+    all_combinations = list(combinations(docs_list, 2))
+
+    # Calculate vector similarity of every combination
     for combination in all_combinations:
         score = combination[0].similarity(combination[1])
-        if score > threshold:
-            results.append((combination[0].text, combination[1].text))
+
+        # Only return those results above the threshold
+        if score > threshold and combination[0].text != combination[1].text:
+            if (combination[0].text, combination[1].text) not in results:
+                results.append((combination[0].text, combination[1].text))
     return results
 
 
-def group_similarity(dictionary, threshold):
-    ''' Group tweets by similarity '''
-    print("Calculating similarities in tweets...")
-    results = {}
-    for key, docs_list in dictionary.items():
-        score, paraphrases = calculate_similarity(docs_list)
-        if score > threshold:
-            results[key] += paraphrases
-    return results

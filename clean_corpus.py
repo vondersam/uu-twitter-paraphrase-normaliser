@@ -1,7 +1,8 @@
 from langdetect import detect
-from os import listdir, path, makedirs
 import json
 import csv
+from file_manager import load_tracker, save_tracker, get_ouput_filenames
+from os import listdir
 
 """ Build a cleaned, monolingual corpus iteratively """
 
@@ -21,43 +22,12 @@ def corpus_size(ouput_dir):
     return counter
 
 
-def load_tracker(output_dir):
-    ''' Load tracker with filenames processed '''
-    # Create output_dir if not exist
-    if not path.exists(output_dir):
-        makedirs(output_dir)
-
-    tracker = output_dir + "tracker.json"
-    inv_tracker = output_dir + "inverted_tracker.json"
-    try:
-        with open(tracker, 'r') as f, open(inv_tracker, 'r') as inv_f:
-            return json.loads(f.read()), json.loads(inv_f.read())
-    except:
-        with open(tracker, 'w') as f, open(inv_tracker, 'w') as inv_f:
-            return {}, {}
-
-
-def save_tracker(output_dir, tracker, inv_tracker):
-    ''' Save tracker with filenames processed '''
-    tracker_p = output_dir + "tracker.json"
-    inv_tracker_p = output_dir + "inverted_tracker.json"
-    with open(tracker_p, 'w') as f, open(inv_tracker_p, 'w') as inv_f:
-        json.dump(tracker, f)
-        json.dump(inv_tracker, inv_f)
-
-
-def get_ouput_filenames(filename):
-    ''' Create output filenames '''
-    root = path.splitext(filename)[0]
-    output = root + ".csv"
-    output_foreign = root + "_foreign.csv"
-    return output, output_foreign
-
-
 def extract_id_text(tweet):
     ''' Extract text and id from tweets '''
     if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
         return tweet["id"], tweet["retweeted_status"]["extended_tweet"]["full_text"]
+    elif "extended_tweet" in tweet:
+        return tweet["id"], tweet["extended_tweet"]["full_text"]
     else:
         return tweet["id"], tweet["text"]
 
@@ -65,10 +35,11 @@ def extract_id_text(tweet):
 def clean_corpus(input_dir, output_dir, language, foreign=False):
     ''' Separates corpora given a language '''
     #WE MIGH WANT TO CHANGE THE FORMAT OF OUTPUT TO JSON SINCE ITS FASTER TO EXTRACT TWEETS BY ID
-    tracker, inv_tracker = load_tracker(output_dir)
+    tracker, inv_tracker = load_tracker(output_dir, )
 
-    for filename in listdir(input_dir):
+    for filename in listdir(input_dir, "cleaning"):
         print(f"Extracting tweets from {filename}")
+        unique_tweets = {}
         if filename not in tracker:
             tracker[filename] = []
             filepath = input_dir + filename
@@ -95,11 +66,12 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                         try:
                             if detect(text) == language:
                                 # Filter duplicates and save language output
-                                if _id not in inv_tracker:
+                                if text not in unique_tweets:
+                                    unique_tweets[text] = None
                                     output_writer.writerow([_id, text])
-                                    tracker[filename].append(_id)
+                                    #tracker[filename].append(_id)
+                                    tracker[filename] = None
                                     inv_tracker[_id] = output_filename
-
 
                             else:
                                 # Save foreign
