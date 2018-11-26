@@ -48,9 +48,7 @@ class Tweet:
         if "raw" in args:
             return nlp(self.raw_text)
         if "clean" in args:
-            print(args)
-            return self.filter(*args)
-            #return nlp(self.filter(args))
+            return nlp(self.filter(*args))
 
 # feature engineering
 # time sleep

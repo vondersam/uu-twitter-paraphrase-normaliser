@@ -1,11 +1,9 @@
-#from textblob import TextBlob
 from langdetect import detect
-from os import listdir, path
+from os import listdir, path, makedirs
 import json
 import csv
 
 """ Build a cleaned, monolingual corpus iteratively """
-
 
 def corpus_size(ouput_dir):
     ''' Calculate number of tweets in a directory '''
@@ -25,20 +23,27 @@ def corpus_size(ouput_dir):
 
 def load_tracker(output_dir):
     ''' Load tracker with filenames processed '''
-    path = output_dir + "tracker.json"
+    # Create output_dir if not exist
+    if not path.exists(output_dir):
+        makedirs(output_dir)
+
+    tracker = output_dir + "tracker.json"
+    inv_tracker = output_dir + "inverted_tracker.json"
     try:
-        with open(path, 'r') as f:
-            return json.loads(f.read())
+        with open(tracker, 'r') as f, open(inv_tracker, 'r') as inv_f:
+            return json.loads(f.read()), json.loads(inv_f.read())
     except:
-        with open(path, 'w') as f:
-            return dict()
+        with open(tracker, 'w') as f, open(inv_tracker, 'w') as inv_f:
+            return {}, {}
 
 
-def save_tracker(output_dir, tracker):
+def save_tracker(output_dir, tracker, inv_tracker):
     ''' Save tracker with filenames processed '''
-    path = output_dir + "tracker.json"
-    with open(path, 'w') as f:
+    tracker_p = output_dir + "tracker.json"
+    inv_tracker_p = output_dir + "inverted_tracker.json"
+    with open(tracker_p, 'w') as f, open(inv_tracker_p, 'w') as inv_f:
         json.dump(tracker, f)
+        json.dump(inv_tracker, inv_f)
 
 
 def get_ouput_filenames(filename):
@@ -57,15 +62,15 @@ def extract_id_text(tweet):
         return tweet["id"], tweet["text"]
 
 
-
-def clean_corpus(input_dir, output_dir, language):
+def clean_corpus(input_dir, output_dir, language, foreign=False):
     ''' Separates corpora given a language '''
-    tracker = load_tracker(output_dir)
+    #WE MIGH WANT TO CHANGE THE FORMAT OF OUTPUT TO JSON SINCE ITS FASTER TO EXTRACT TWEETS BY ID
+    tracker, inv_tracker = load_tracker(output_dir)
 
     for filename in listdir(input_dir):
         print(f"Extracting tweets from {filename}")
         if filename not in tracker:
-            tracker[filename] = None
+            tracker[filename] = []
             filepath = input_dir + filename
 
             # Input files
@@ -77,32 +82,43 @@ def clean_corpus(input_dir, output_dir, language):
                 # Output files
                 with open(output_filename_path, 'w') as output_file:
                     output_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                    output_writer.writerow(['id', 'tweet'])
 
                     # Output foreign
-                    with open(output_filename_foreign_path, 'w') as output_file_foreign:
+                    if foreign:
+                        output_file_foreign = open(output_filename_foreign_path, 'w')
                         output_writer_foreign = csv.writer(output_file_foreign, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-                        output_writer.writerow(['id', 'tweet'])
                         output_writer_foreign.writerow(['id', 'tweet'])
 
-                        for line in input_file:
-                            _id, text = extract_id_text(json.loads(line))
-                            try:
-                                if detect(text) == language:
-
+                    for line in input_file:
+                        _id, text = extract_id_text(json.loads(line))
+                        try:
+                            if detect(text) == language:
+                                # Filter duplicates and save language output
+                                if _id not in inv_tracker:
                                     output_writer.writerow([_id, text])
-                                else:
-                                    output_writer_foreign.writerow([_id, text])
-                            except:
-                                print(text)
+                                    tracker[filename].append(_id)
+                                    inv_tracker[_id] = output_filename
 
-        save_tracker(output_dir, tracker)
+
+                            else:
+                                # Save foreign
+                                if foreign:
+                                    output_writer_foreign.writerow([_id, text])
+                        except:
+                            print(text)
+                    if foreign:
+                        output_file_foreign.close()
+
+        save_tracker(output_dir, tracker, inv_tracker)
     print("Process finished")
+    return inv_tracker
 
 
 
 if __name__ == "__main__":
-    original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus/"
-    final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
-    clean_corpus(original_corpus, final_corpus, "es")
-    print(f"The corpus has {corpus_size(final_corpus)} tweets")
+    main()
+    #original_corpus = "/home/samuel/Documents/Classes/research_and_development/twitter-corpus/"
+    #final_corpus = "/home/samuel/Documents/Classes/research_and_development/final_corpus/"
+    #clean_corpus(original_corpus, final_corpus, "es")
+    #print(f"The corpus has {corpus_size(final_corpus)} tweets")
