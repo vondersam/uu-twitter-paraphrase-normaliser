@@ -4,9 +4,9 @@ import json
 def load_tracker(output_dir, subdir, name):
     ''' Load tracker with filenames processed '''
     # Create output_dir if not exist
-    directory = output_dir + f"/{subdir}/"
+    directory = output_dir + f"{subdir}_trackers/"
     if not path.exists(directory):
-        makedirs(output_dir)
+        makedirs(directory)
 
     filepath = directory + name
     try:
@@ -19,8 +19,8 @@ def load_tracker(output_dir, subdir, name):
 
 def save_tracker(output_dir, subdir, name, tracker):
     ''' Save tracker with filenames processed '''
-    filepath = output_dir + f"{name}"
-    with open(filepath, 'w') as f
+    filepath = output_dir + f"{subdir}_trackers/" + name
+    with open(filepath, 'w') as f:
         json.dump(tracker, f)
 
 

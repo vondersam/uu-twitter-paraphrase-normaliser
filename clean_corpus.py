@@ -2,7 +2,7 @@ from langdetect import detect
 import json
 import csv
 from file_manager import load_tracker, save_tracker, get_ouput_filenames
-from os import listdir
+from os import listdir, path, makedirs
 
 """ Build a cleaned, monolingual corpus iteratively """
 
@@ -38,18 +38,22 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
     tracker = load_tracker(output_dir, "cleaning", "tracker.json")
     inv_tracker = load_tracker(output_dir, "cleaning", "inv_tracker.json")
 
-    for filename in listdir(input_dir, "cleaning"):
-        print(f"Extracting tweets from {filename}")
-        unique_tweets = {}
-        if filename not in tracker:
-            tracker[filename] = []
+    for filename in listdir(input_dir):
+        if filename not in tracker and filename.endswith(".json"):
+            print(f"Extracting tweets from {filename}")
+            unique_tweets = {}
             filepath = input_dir + filename
 
             # Input files
             with open(filepath, 'r') as input_file:
                 output_filename, output_filename_foreign = get_ouput_filenames(filename)
-                output_filename_path = output_dir + output_filename
-                output_filename_foreign_path = output_dir + output_filename_foreign
+
+                # Output directory
+                corpus_directory = output_dir + "/corpus/"
+                if not path.exists(corpus_directory):
+                    makedirs(corpus_directory)
+                output_filename_path = corpus_directory + output_filename
+                output_filename_foreign_path = corpus_directory + output_filename_foreign
 
                 # Output files
                 with open(output_filename_path, 'w') as output_file:
@@ -83,6 +87,7 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                     if foreign:
                         output_file_foreign.close()
 
+        tracker[filename] = None
         save_tracker(output_dir, "cleaning", "tracker.json", tracker)
         save_tracker(output_dir, "cleaning", "inv_tracker.json", inv_tracker)
     print("All tweets extracted")

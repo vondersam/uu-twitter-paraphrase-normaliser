@@ -1,11 +1,13 @@
+from random import randrange
+from tweet import Tweet
+from file_manager import load_tracker, save_tracker
+from os import listdir
 import spacy
 import sys
 import json
 import csv
-from os import listdir
 import itertools
-from random import randrange
-from tweet import Tweet
+
 
 
 nlp = spacy.load('es_core_news_md')
@@ -23,62 +25,43 @@ def filter_entities(doc, _id, dictionary):
                 dictionary[key].append(_id)
 
 
-def group_entities(input_dir, limit):
+def group_entities(input_dir, limit=0):
     """ Group tweets by entities. Set limit to 0 to check all files """
-    ner_dict = dict()
+
+    # Set number of files to check
     if limit == 0:
         limit = len(listdir(input_dir))
     counter = 0
 
-    for filename in listdir(input_dir):
-        if ".csv" in filename:
-            if counter < limit:
-                counter += 1
-                print(f"Checking NER in {filename}")
-                input_path = input_dir + filename
-                with open(input_path) as file_in:
-                    reader = csv.DictReader(file_in)
-                    for row in reader:
-                        _id = row["id"]
-                        t = Tweet(row["tweet"]).spacyfy("clean", "*")
-                        filter_entities(t, _id, ner_dict)
-    save_output(ner_dict, input_dir)
+    tracker = load_tracker(input_dir, "ner", "tracker.json")
+    ner_dict = load_tracker(input_dir, "ner", "grouped_entities.json")
 
+    corpus_dir = input_dir + "corpus/"
 
-def save_output(dictionary, ouput_dir):
-    print(f"Saving results to file...")
-    output_path = ouput_dir + "grouped_entities.json"
-    with open(output_path, 'w') as f:
-        json.dump(dictionary, f)
-
-'''
-def save_output(dictionary, ouput_dir, split_limit):
-    print(f"Saving results to file...")
-
-    counter = 0
-    output_path = ouput_dir + "grouped_entities.json" + str(randrange(10000))
-    file_out = open(output_path, 'w')
-
-    for key, value in dictionary.items():
-        if counter < split_limit:
+    for filename in listdir(corpus_dir):
+        if filename.endswith(".csv") and filename not in tracker:
             counter += 1
-            json.dump(dictionary, file_out)
-        else:
-            counter = 0
-            file_out.close()
-            output_path = ouput_dir + "grouped_entities.json" + str(randrange(10000))
-            file_out = open(output_path, 'w')
-    file_out.close()
-'''
+            print(f"Checking NER in {filename}")
+            input_path = corpus_dir + filename
+
+            with open(input_path) as file_in:
+                reader = csv.DictReader(file_in)
+                for row in reader:
+                    _id = row["id"]
+                    t = Tweet(row["tweet"]).spacyfy("clean", "*")
+                    filter_entities(t, _id, ner_dict)
+            tracker[filename] = None
+
+        save_tracker(input_dir, "ner", "grouped_entities.json", ner_dict)
+        save_tracker(input_dir, "ner", "tracker.json", tracker)
+    print("All entities grouped")
+    return ner_dict
+
+
 
 if __name__ == "__main__":
     main()
-    #input_path = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/cleanup_twitter_corpus/"
-    #output_path = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/grouped_ner/"
-    #results = group_entities(input_path, 1)
-    #similarities = group_similarity(results, 1)
-    #print(similaritites)
-    #save_output(similarities, output_path, 1)
+
 
 
 

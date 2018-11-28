@@ -1,12 +1,13 @@
 from corpus import Corpus
 
 
-original_corpus = "/home/samuel/Documents/test_corpus/"
-final_corpus = "/home/samuel/Documents/result_test_corpus/"
+original_corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/original_twitter_corpus/"
+final_corpus = "/Users/samuelrodriguezmedina/Documents/research/"
 c = Corpus()
 c.create_corpus(original_corpus, final_corpus, 'es')
-c.group_by_entity(final_corpus, 0)
+c.group_by_entity(final_corpus)
 c.extract_paraphrases(final_corpus, 0.99)
+#c.extract_paraphrases(final_corpus, "jaccard", 0.20)
 
 
 
