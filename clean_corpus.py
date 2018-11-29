@@ -34,7 +34,6 @@ def extract_id_text(tweet):
 
 def clean_corpus(input_dir, output_dir, language, foreign=False):
     ''' Separates corpora given a language '''
-    #WE MIGH WANT TO CHANGE THE FORMAT OF OUTPUT TO JSON SINCE ITS FASTER TO EXTRACT TWEETS BY ID
     tracker = load_tracker(output_dir, "cleaning", "tracker.json")
     inv_tracker = load_tracker(output_dir, "cleaning", "inv_tracker.json")
 
@@ -74,7 +73,6 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                                 if text not in unique_tweets:
                                     unique_tweets[text] = None
                                     output_writer.writerow([_id, text])
-                                    #tracker[filename].append(_id)
                                     tracker[filename] = None
                                     inv_tracker[_id] = output_filename
 

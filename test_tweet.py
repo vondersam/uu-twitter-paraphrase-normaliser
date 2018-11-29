@@ -7,6 +7,7 @@ c = Corpus()
 c.create_corpus(original_corpus, final_corpus, 'es')
 c.group_by_entity(final_corpus)
 c.extract_paraphrases(final_corpus, 0.99)
+#c = Corpus(original_corpus, final_corpus, "jaccard")
 #c.extract_paraphrases(final_corpus, "jaccard", 0.20)
 
 

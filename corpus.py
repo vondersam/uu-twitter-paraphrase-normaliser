@@ -3,17 +3,23 @@ from clean_corpus import clean_corpus
 from name_entity_recognition import group_entities
 from similarity import calculate_similarity
 from file_manager import load_tracker
+from collections import OrderedDict
+from os import path, makedirs
 import json
 import csv
 
 
 class Corpus:
-    def __init__(self, name):
-        # tweet id + filename
-        self.tweets = {} # inverted_tracker
-        self.tweets_by_entity = {} #dict {ENT: [id1, id2, id3]}
-        self.paraphrases = {} # dict {SENT: [paraphrase1, paraphrase2]}
-        self.corpus_directory = name
+    def __init__(self, input_dir, output_dir, name):
+        self.input_dir = input_dir
+        self.output_dirs = OrderedDict([
+            ("general", output_dir + f"{name}_corpus/"),
+            ("corpus", output_dir + f"{name}_corpus/corpus/"),
+            ("clean", output_dir + f"{name}_corpus/clean/"),
+            ("ner", output_dir + f"{name}_corpus/ner/")
+            ])
+        for _, each_dir in self.output_dirs.items():
+            makedirs(each_dir)
 
 
     def create_corpus(self, input_dir, output_dir, language, foreign=False):
