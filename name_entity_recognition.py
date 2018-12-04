@@ -9,10 +9,8 @@ import csv
 import itertools
 
 
-
 nlp = spacy.load('es_core_news_md')
 
-#SAVE ner SO WE DONT HAVE TO RUN IT EVERYTIME. rIGHT NOW ITS GETTING OVERWRITTEN
 def filter_entities(doc, _id, dictionary):
     for ent in doc.ents:
         key = str((ent.label_, ent.text))

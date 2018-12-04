@@ -10,22 +10,12 @@ import csv
 
 
 class Corpus:
-    def __init__(self, input_dir, output_dir, name):
-        self.input_dir = input_dir
-        self.output_dirs = OrderedDict([
-            ("general", output_dir + f"{name}_corpus/"),
-            ("corpus", output_dir + f"{name}_corpus/corpus/"),
-            ("clean", output_dir + f"{name}_corpus/clean/"),
-            ("ner", output_dir + f"{name}_corpus/ner/")
-            ])
-        for _, each_dir in self.output_dirs.items():
-            makedirs(each_dir)
-
+    def __init__(self):
+        self.tweet = None
 
     def create_corpus(self, input_dir, output_dir, language, foreign=False):
         """ Create a corpus from a directory of json tweet files """
         clean_corpus(input_dir, output_dir, language, foreign)
-        return self.tweets
 
 
     def get_tweets_by_entity(self, file_path):
@@ -52,12 +42,12 @@ class Corpus:
         list_of_tweets = []
         for _id in id_list:
             t = self.get_tweet_by_id(_id, input_directory, inverted_tracker)
-            list_of_tweets.append(Tweet(t).spacyfy("clean", "*"))
+            list_of_tweets.append(Tweet(t).filter("*"))
 
         return list_of_tweets
 
 
-    def extract_paraphrases(self, input_directory, threshold):
+    def extract_paraphrases(self, input_directory, similarity_type, threshold):
         print("Calculating similarities in tweets...")
         results = {}
         grouped_entities = self.group_by_entity(input_directory)
@@ -65,7 +55,7 @@ class Corpus:
 
         for entity, id_list in grouped_entities.items():
             tweets_list = self.get_tweets_by_ids(id_list, input_directory, inverted_tracker)
-            paraphrases = calculate_similarity(tweets_list, threshold)
+            paraphrases = calculate_similarity(tweets_list, similarity_type, threshold)
             for paraphrase_pair in paraphrases:
                 results[paraphrase_pair[0]] = paraphrase_pair[1]
 

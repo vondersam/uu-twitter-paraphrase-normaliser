@@ -22,11 +22,17 @@ class Tweet:
         if "emoticons" in args:
             exps.append("emoticons")
         if "handles" in args:
-            exps.append(re.compile("(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)"))
+            # Handles at start of string
+            exps.append(re.compile("^\s*((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)\s*)*"))
+            # Handles at end of string
+            exps.append(re.compile("\s+((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)\s*)*$"))
         if "urls" in args:
             exps.append(re.compile("(https?|ftp)://[^\s/$.?#].[^\s]*"))
         if "hashtags" in args:
-            exps.append(re.compile("(?<=^|(?<=[^a-zA-Z0-9-\.À-ÿ\u00f1\u00d1]))#([A-Za-z]+[A-Za-z0-9-À-ÿ\u00f1\u00d1]+)"))
+            # Hastags at start of string
+            exps.append(re.compile("^\s*((?<=^|(?<=[^a-zA-Z0-9-\.À-ÿ\u00f1\u00d1]))#([A-Za-z]+[A-Za-z0-9-À-ÿ\u00f1\u00d1]+)\s*)*"))
+            # Hashtags at end of string
+            exps.append(re.compile("\s+((?<=^|(?<=[^a-zA-Z0-9-\.À-ÿ\u00f1\u00d1]))#([A-Za-z]+[A-Za-z0-9-À-ÿ\u00f1\u00d1]+)\s*)*$"))
 
         # Use all filters
         if "*" in args and not exps:
@@ -50,9 +56,6 @@ class Tweet:
             return nlp(self.raw_text)
         if "clean" in args:
             return nlp(self.filter(*args))
-
-# feature engineering
-# time sleep
 
 
 

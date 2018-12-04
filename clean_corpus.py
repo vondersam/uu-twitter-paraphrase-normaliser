@@ -3,6 +3,9 @@ import json
 import csv
 from file_manager import load_tracker, save_tracker, get_ouput_filenames
 from os import listdir, path, makedirs
+from nltk import sent_tokenize
+import string
+
 
 """ Build a cleaned, monolingual corpus iteratively """
 
@@ -30,6 +33,17 @@ def extract_id_text(tweet):
         return tweet["id"], tweet["extended_tweet"]["full_text"]
     else:
         return tweet["id"], tweet["text"]
+
+
+def split_sentences(text, _id):
+    """ Split a tweet into sentences """
+    result = {}
+    append_id_list = list(string.ascii_lowercase)
+    for sent in sent_tokenize(text):
+        if sent not in result:
+            append_id = append_id_list.pop(0)
+            result[sent] = str(_id) + append_id
+    return result
 
 
 def clean_corpus(input_dir, output_dir, language, foreign=False):
@@ -69,12 +83,16 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                         _id, text = extract_id_text(json.loads(line))
                         try:
                             if detect(text) == language:
-                                # Filter duplicates and save language output
-                                if text not in unique_tweets:
-                                    unique_tweets[text] = None
-                                    output_writer.writerow([_id, text])
-                                    tracker[filename] = None
-                                    inv_tracker[_id] = output_filename
+                                # Split tweet by sentence
+                                sentences = split_sentences(text, _id)
+
+                                for sent, sent_id in sentences.items():
+                                    # Filter duplicates and save language output
+                                    if sent not in unique_tweets:
+                                        unique_tweets[sent] = None
+                                        output_writer.writerow([sent_id, sent])
+                                        tracker[filename] = None
+                                        inv_tracker[sent_id] = output_filename
 
                             else:
                                 # Write foreign text to another file
