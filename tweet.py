@@ -57,10 +57,3 @@ class Tweet:
         if "clean" in args:
             return nlp(self.filter(*args))
 
-
-
-
-
-
-
-
