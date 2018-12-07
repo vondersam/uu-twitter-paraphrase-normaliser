@@ -42,7 +42,10 @@ class Corpus:
         list_of_tweets = []
         for _id in id_list:
             t = self.get_tweet_by_id(_id, input_directory, inverted_tracker)
-            list_of_tweets.append(Tweet(t).filter("*"))
+            tweet_item = Tweet(t)
+            tweet_item.filter("*")
+            tokenized_tweet = tweet_item.tokenize()
+            list_of_tweets.append(tokenized_tweet)
 
         return list_of_tweets
 

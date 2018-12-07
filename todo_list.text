@@ -1,4 +1,4 @@
-# Script to separate source and target
+DONE Script to separate source and target
 # Prunning of corpus with a significance test
 
 # Create scripts for MT with Moses
@@ -7,5 +7,7 @@
 # Quality evaluation (looking at specific cases why some happens)
 # Quantity evaluation from the shared task
 
+# Optional
+- try to clean up the data better (still some emojis and strange symbols showing)
+- still some tweets show incomplete (with ... at the end)
 
-# Last seminar is optional

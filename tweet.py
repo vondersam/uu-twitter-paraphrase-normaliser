@@ -1,8 +1,11 @@
 import spacy
 import re
 import emoji
+from nltk.tokenize import TweetTokenizer
+
 
 nlp = spacy.load('es_core_news_md')
+tokenize = nlp.tokenizer
 
 
 class Tweet:
@@ -50,6 +53,15 @@ class Tweet:
         # Remove extra spaces
         self.clean_text = re.sub(r"\s\s+", ' ', filtering_text.strip())
         return self.clean_text
+
+
+    def tokenize(self):
+        try:
+            tokens = TweetTokenizer().tokenize(self.clean_text)
+            return " ".join(tokens)
+        except Exception as e:
+            print(e)
+            print("Cannot tokenize text")
 
 
     def spacyfy(self, *args):
