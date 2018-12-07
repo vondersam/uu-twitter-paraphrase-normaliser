@@ -21,22 +21,24 @@ class Tweet:
             exps.append(re.compile("^RT ?(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+):"))
         if "emoticons" in args:
             exps.append("emoticons")
+        if "flags" in args:
+            exps.append(re.compile(u"[\U0001F1E6-\U0001F1FF]"))
         if "handles" in args:
             # Handles at start of string
-            exps.append(re.compile("^\s*((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)\s*)*"))
+            exps.append(re.compile("^\s*((?<=^|(?<=[^\S]))@([\S]+)\s*)*"))
             # Handles at end of string
-            exps.append(re.compile("\s+((?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)\s*)*$"))
+            exps.append(re.compile("\s+((?<=^|(?<=[^\S]))@(\S+)\s*)*$"))
         if "urls" in args:
             exps.append(re.compile("(https?|ftp)://[^\s/$.?#].[^\s]*"))
         if "hashtags" in args:
             # Hastags at start of string
-            exps.append(re.compile("^\s*((?<=^|(?<=[^a-zA-Z0-9-\.À-ÿ\u00f1\u00d1]))#([A-Za-z]+[A-Za-z0-9-À-ÿ\u00f1\u00d1]+)\s*)*"))
+            exps.append(re.compile("^\s*((?<=^|(?<=[^\S]))#([\S]+)\s*)*"))
             # Hashtags at end of string
-            exps.append(re.compile("\s+((?<=^|(?<=[^a-zA-Z0-9-\.À-ÿ\u00f1\u00d1]))#([A-Za-z]+[A-Za-z0-9-À-ÿ\u00f1\u00d1]+)\s*)*$"))
+            exps.append(re.compile("\s+((?<=^|(?<=[^\S]))#(\S+)\s*)*$"))
 
         # Use all filters
         if "*" in args and not exps:
-            return self.filter("retweets", "emoticons", "handles", "urls", "hashtags")
+            return self.filter("retweets", "emoticons", "flags", "handles", "urls", "hashtags")
 
         filtering_text = self.raw_text
         for expression in exps:

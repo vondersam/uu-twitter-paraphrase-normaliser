@@ -61,6 +61,7 @@ class Corpus:
 
         paraphrases_path = input_directory + "paraphrases.json"
 
+
         with open(paraphrases_path, 'w') as fout:
             json.dump(results, fout)
         print("All paraphrases extracted")
