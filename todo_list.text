@@ -1,9 +1,14 @@
 DONE Script to separate source and target
 # Prunning of corpus with a significance test
 
-# Create scripts for MT with Moses
 # Train Language Model
 # Train Translation Model and get the translation tables
+
+
+# Testing
+1.- CER and BLEU scores for how well the training model generalises:
+    We need to split the corpus in training and dev set
+2.- Apply to the Shared Task
 # Quality evaluation (looking at specific cases why some happens)
 # Quantity evaluation from the shared task
 
