@@ -35,12 +35,13 @@ def group_entities(input_dir, limit=0):
     ner_dict = load_tracker(input_dir, "ner", "grouped_entities.json")
 
     corpus_dir = input_dir + "corpus/"
-    total_files = len(listdir(corpus_dir))
+    # Calculate the number of files left to process
+    total_files = len(listdir(corpus_dir)) - len(tracker)
     counter = total_files
 
     for filename in listdir(corpus_dir):
         if filename.endswith(".csv") and filename not in tracker:
-            counter += 1
+            counter -= 1
             print(f"Checking NER in {filename}")
             input_path = corpus_dir + filename
 

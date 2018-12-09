@@ -9,23 +9,20 @@ def calculate_similarity(docs_list, similarity_type, threshold):
 
     # Get all possible combinations of tweets that have same NER
     all_combinations = list(combinations(docs_list, 2))
-    len_combinations = len(all_combinations)
-    counter = len_combinations
 
     # Calculate vector similarity of every combination
     for combination in all_combinations:
-        if similarity_type == "vector":
-            score = combination[0].similarity(combination[1])
-        elif similarity_type == "jaccard":
+        if combination[0] != combination[1]:
             text1 = set(word_tokenize(combination[0]))
             text2 = set(word_tokenize(combination[1]))
-            score = jaccard_distance(text1, text2)
 
-        # Only return those results above the threshold
-        if score > threshold and combination[0] != combination[1]:
-            if (combination[0], combination[1]) not in results:
-                results.append((combination[0], combination[1]))
-        counter -= 1
-        sys.stdout.write(f"Processed {counter} of {len_combinations}")
-        sys.stdout.flush()
+            if len(text1) > 3 and len(text2) > 3:
+                # Only return those results above the threshold
+                if jaccard_distance(text1, text2) < threshold:
+                    if (combination[0], combination[1]) not in results:
+                        results.append((combination[0], combination[1]))
+
+
+    sys.stdout.write(f"\rAdding combinations...")
+    sys.stdout.flush()
     return results

@@ -30,3 +30,17 @@ def get_ouput_filenames(filename):
     output = root + ".csv"
     output_foreign = root + "_foreign.csv"
     return output, output_foreign
+
+def write_final_files(output_dir, paraphrases_results):
+    ''' Write the final files in two different files '''
+    directory = output_dir + "final_files/"
+    if not path.exists(directory):
+        makedirs(directory)
+    filepath_src = directory + "paraphrases.source"
+    filepath_tgt = directory + "paraphrases.target"
+
+    with open(filepath_src, 'w') as s, open(filepath_tgt, 'w') as t:
+        for result in paraphrases_results:
+            for paraphrase_pair in result.get():
+                s.write(paraphrase_pair[0] + "\n")
+                t.write(paraphrase_pair[1] + "\n")

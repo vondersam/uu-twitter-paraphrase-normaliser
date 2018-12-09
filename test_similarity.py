@@ -1,7 +1,8 @@
-import spacy
-import json
-import itertools
-from nltk import jaccard_distance
+#import spacy
+#import json
+#import itertools
+from nltk import jaccard_distance, word_tokenize
+
 
 '''
 nlp = spacy.load('es_core_news_md')
@@ -16,22 +17,24 @@ for i in results:
     print("RESULT:")
     print(i, i[0].similarity(i[1]))
 '''
-sent1 = set("It might help to re-install Python if possible.")
-sent2 = set("It can help to install Python again if possible.")
-sent3 = set("It can be so helpful to reinstall C++ if possible.")
-sent4 = set("help It possible Python to re-install if might.") # This has the same words as sent1 with a different order.
-sent5 = set("I love Python programming.")
+sentences = [
+("Aurah : “ Ves a Miriam bipolar ? ” Verdeliss : “ Las enfermedades mentales las tiene que diagnosticar un profesional , no yo , …", "Aurah : “ Ves a Miriam bipolar ? ” Verdeliss : “ Las enfermedades mentales las tiene que diagnosticar un profesional , no yo , así que no ” Aurah hija , te cubres de gloria"),
+("Esta frase es exacta", "Esta frase es exacta"),
+("Esta amiga es muy parecida", "Esta frase es exacta"),
+("Toa la vida pensando que se iba pa'rriba", "Toda la vida pensando que subía"),
+("Lleva menos de una temporada y ya habla mejor que Bale","Lleva menos de una temporada en España y ya habla mejor que Bale"),
+("Esta es completmanete random", "la vida nos lleva a pensar"),
+("To lo que pasa en graná esta torcio", "Todo lo que pasa en Granada está torcido")
+]
 
-jd_sent_1_2 = jaccard_distance(sent1, sent2)
-jd_sent_1_3 = jaccard_distance(sent1, sent3)
-jd_sent_1_4 = jaccard_distance(sent1, sent4)
-jd_sent_1_5 = jaccard_distance(sent1, sent5)
-
-
-print(jd_sent_1_2, 'Jaccard Distance between sent1 and sent2')
-print(jd_sent_1_3, 'Jaccard Distance between sent1 and sent3')
-print(jd_sent_1_4, 'Jaccard Distance between sent1 and sent4')
-print(jd_sent_1_5, 'Jaccard Distance between sent1 and sent5')
-
+for i in sentences:
+    text1 = set(word_tokenize(i[0]))
+    text2 = set(word_tokenize(i[1]))
+    score = jaccard_distance(text1, text2)
+    print(i[0])
+    print(i[1])
+    print(score)
+    print(score < 0.5)
+    print()
 
 
