@@ -35,6 +35,8 @@ def group_entities(input_dir, limit=0):
     ner_dict = load_tracker(input_dir, "ner", "grouped_entities.json")
 
     corpus_dir = input_dir + "corpus/"
+    total_files = len(listdir(corpus_dir))
+    counter = total_files
 
     for filename in listdir(corpus_dir):
         if filename.endswith(".csv") and filename not in tracker:
@@ -50,8 +52,11 @@ def group_entities(input_dir, limit=0):
                     filter_entities(t, _id, ner_dict)
             tracker[filename] = None
 
-        save_tracker(input_dir, "ner", "grouped_entities.json", ner_dict)
-        save_tracker(input_dir, "ner", "tracker.json", tracker)
+            save_tracker(input_dir, "ner", "grouped_entities.json", ner_dict)
+            save_tracker(input_dir, "ner", "tracker.json", tracker)
+            sys.stdout.write(f"Finished {counter} of {total_files} files")
+            sys.stdout.flush()
+
     print("All entities grouped")
     return ner_dict
 

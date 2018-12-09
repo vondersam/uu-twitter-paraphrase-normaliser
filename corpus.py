@@ -7,6 +7,7 @@ from collections import OrderedDict
 from os import path, makedirs
 import json
 import csv
+import sys
 
 
 class Corpus:
@@ -55,12 +56,17 @@ class Corpus:
         results = {}
         grouped_entities = self.group_by_entity(input_directory)
         inverted_tracker = load_tracker(input_directory, "cleaning", "inv_tracker.json")
+        total_entities = len(grouped_entities)
+        counter = total_entities
 
         for entity, id_list in grouped_entities.items():
             tweets_list = self.get_tweets_by_ids(id_list, input_directory, inverted_tracker)
             paraphrases = calculate_similarity(tweets_list, similarity_type, threshold)
             for paraphrase_pair in paraphrases:
                 results[paraphrase_pair[0]] = paraphrase_pair[1]
+            counter -= 1
+            sys.stdout.write(f"Finished {counter} of {total_entities}")
+            sys.stdout.flush()
 
         paraphrases_path = input_directory + "paraphrases.json"
 

@@ -6,6 +6,7 @@ corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research
 # Corpus MD
 #corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/test_delete_md/"
 final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_development/uu-twitter-paraphrase-normaliser/experiment1/"
+
 c = Corpus()
 c.create_corpus(corpus, final_corpus, 'es')
 c.group_by_entity(final_corpus)
