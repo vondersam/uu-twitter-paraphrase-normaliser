@@ -2,8 +2,9 @@ import spacy
 import re
 import emoji
 from nltk.tokenize import TweetTokenizer
+import aspell
 
-
+s = aspell.Speller('lang', 'es')
 nlp = spacy.load('es_core_news_md')
 tokenize = nlp.tokenizer
 
@@ -70,4 +71,12 @@ class Tweet:
             return nlp(self.raw_text)
         if "clean" in args:
             return nlp(self.filter(*args))
+
+    def oov_words(self):
+        """ Return number of out of vocabulary words of the tweet """
+        oov = int()
+        for word in self.filter("*").split():
+            if not s.check(word):
+                oov += 1
+        return oov
 

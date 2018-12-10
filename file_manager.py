@@ -31,13 +31,13 @@ def get_ouput_filenames(filename):
     output_foreign = root + "_foreign.csv"
     return output, output_foreign
 
-def write_final_files(output_dir, paraphrases_results):
+def write_final_files(output_dir, paraphrases_results, name):
     ''' Write the final files in two different files '''
     directory = output_dir + "final_files/"
     if not path.exists(directory):
         makedirs(directory)
-    filepath_src = directory + "paraphrases.source"
-    filepath_tgt = directory + "paraphrases.target"
+    filepath_src = directory + f"{name}_paraphrases.source"
+    filepath_tgt = directory + f"{name}_paraphrases.target"
 
     with open(filepath_src, 'w') as s, open(filepath_tgt, 'w') as t:
         for result in paraphrases_results:

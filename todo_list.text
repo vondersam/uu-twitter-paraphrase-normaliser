@@ -1,8 +1,12 @@
-DONE Script to separate source and target
-# Prunning of corpus with a significance test
 
-# Train Language Model
-# Train Translation Model and get the translation tables
+DONE Script to separate source and target
+DONE Turned off -distortion-limit
+# Prunning of corpus with a significance test
+# Filter out sentences that map from invocabulary to outvocabulary ASPELL
+# Filter sentence pairs that are too distance from each other (more than 6 words)
+# lexical similarity penalty
+TODO: CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraining
+
 
 
 # Testing
@@ -12,9 +16,10 @@ DONE Script to separate source and target
 # Quality evaluation (looking at specific cases why some happens)
 # Quantity evaluation from the shared task
 
+
 # Optional
 - try to clean up the data better (still some emojis and strange symbols showing)
 - still some tweets show incomplete (with ... at the end)
+- We can use gz
+DONE -  When calculating similarities, we can directly separate every two sentences and print them to file. we can also separate into several files
 
-when calculating similarities, we can directly separate every two sentences and print them to file. we can also separate into several files
-we can use gz
