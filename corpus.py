@@ -91,23 +91,11 @@ class Corpus:
             p = Pool()
             paraphrases_results = [p.apply_async(calculate_similarity, args=(self.get_tweets_by_ids(id_list, input_directory, inverted_tracker),similarity_type, threshold,)) for entity, id_list in grouped_entities.items()]
 
-            #for entity, id_list in grouped_entities.items():
-                #tweets_list = self.get_tweets_by_ids(id_list, input_directory, inverted_tracker)
-                #paraphrases = calculate_similarity(tweets_list, similarity_type, threshold)
 
             # Write output in source and target files
             write_final_files(input_directory, paraphrases_results, current)
             p.close()
             p.join()
         print("All paraphrases extracted")
-
-        #for result in paraphrases_results:
-        #    for paraphrase_pair in result.get():
-        #        results[paraphrase_pair[0]] = paraphrase_pair[1]
-
-        # TODO: Save in file when finishes entity. final files big are too big, save in new file
-        #with open("results.json", 'w') as fout:
-        #    json.dump(results, fout)
-        #print("All paraphrases extracted, second time")
 
 

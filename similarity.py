@@ -1,6 +1,7 @@
 from itertools import combinations
 from nltk import jaccard_distance, word_tokenize
 import sys
+from tweet import Tweet
 
 
 def calculate_similarity(docs_list, similarity_type, threshold):
@@ -12,16 +13,31 @@ def calculate_similarity(docs_list, similarity_type, threshold):
 
     # Calculate vector similarity of every combination
     for combination in all_combinations:
-        if combination[0] != combination[1]:
-            text1 = set(word_tokenize(combination[0]))
-            text2 = set(word_tokenize(combination[1]))
+        text1 = combination[0].strip()
+        text2 = combination[1].strip()
 
-            if len(text1) > 3 and len(text2) > 3:
-                # Only return those results above the threshold
-                if jaccard_distance(text1, text2) < threshold:
-                    if (combination[0], combination[1]) not in results:
-                        results.append((combination[0], combination[1]))
+        # Filter out pairs with exact sentences
+        if text1 != text2:
 
+            # Filter out sentences shorter than 4 words
+            if len(combination[0].split()) > 3 and len(text2) > 3:
+
+                # Filter out those combinations with excesive word number differences
+                if abs(len(text1) - len(text2)) < 4:
+
+                    # Only return those results above the threshold
+                    settext1 = set(word_tokenize(text1))
+                    settext2 = set(word_tokenize(text2))
+                    if jaccard_distance(settext1, settext2) < threshold:
+
+                        # Put in source sentences with more oov words
+                        if Tweet(combination[0]).oov_words() > Tweet(combination[1]).oov_words():
+                            bi_combination = combination[0], combination[1]
+                        else:
+                            bi_combination = combination[1], combination[0]
+
+                        if bi_combination not in results:
+                            results.append(bi_combination)
 
     sys.stdout.write(f"\rAdding combinations...")
     sys.stdout.flush()

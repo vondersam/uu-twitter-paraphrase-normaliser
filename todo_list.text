@@ -1,8 +1,8 @@
-
 DONE Script to separate source and target
 DONE Turned off -distortion-limit
 # Prunning of corpus with a significance test
 # Filter out sentences that map from invocabulary to outvocabulary ASPELL
+
 # Filter sentence pairs that are too distance from each other (more than 6 words)
 # lexical similarity penalty
 TODO: CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraining
