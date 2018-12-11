@@ -45,10 +45,7 @@ class Corpus:
         list_of_tweets = []
         for _id in id_list:
             t = self.get_tweet_by_id(_id, input_directory, inverted_tracker)
-            tweet_item = Tweet(t)
-            tweet_item.filter("*")
-            tokenized_tweet = tweet_item.tokenize()
-            list_of_tweets.append(tokenized_tweet)
+            list_of_tweets.append(Tweet(t))
 
         return list_of_tweets
 
@@ -77,25 +74,28 @@ class Corpus:
         # Get all entities
         entities = self.group_by_entity(input_directory)
         inverted_tracker = load_tracker(input_directory, "cleaning", "inv_tracker.json")
-        number_of_splits = 8
-        print("Dictionary has been split")
-        list_of_dicts = self.split_dict_equally(entities, number_of_splits)
-        list_of_numbers = list(range(number_of_splits))
+        #number_of_splits = 8
+        #print("Dictionary has been split")
+        #list_of_dicts = self.split_dict_equally(entities, number_of_splits)
+        #list_of_numbers = list(range(number_of_splits))
 
 
-        for grouped_entities in list_of_dicts:
-            current = str(list_of_numbers.pop(0))
-            print(f"{current}/{str(number_of_splits)} processed similarities")
+        #for grouped_entities in list_of_dicts:
+        #current = str(list_of_numbers.pop(0))
+        #print(f"{current}/{str(number_of_splits)} processed similarities")
 
-            # Multiprocessing pool to extract paraphrases faster
-            p = Pool()
-            paraphrases_results = [p.apply_async(calculate_similarity, args=(self.get_tweets_by_ids(id_list, input_directory, inverted_tracker),similarity_type, threshold,)) for entity, id_list in grouped_entities.items()]
+        # Multiprocessing pool to extract paraphrases faster
+        p = Pool()
+        paraphrases_results = [p.apply_async(calculate_similarity, args=(self.get_tweets_by_ids(id_list, input_directory, inverted_tracker),similarity_type, threshold,)) for entity, id_list in entities.items()]
 
 
-            # Write output in source and target files
-            write_final_files(input_directory, paraphrases_results, current)
-            p.close()
-            p.join()
+        # Write output in source and target files
+        write_final_files(input_directory, paraphrases_results, "final")
+        p.close()
+        p.join()
         print("All paraphrases extracted")
+
+if __name__ == '__main__':
+    main()
 
 

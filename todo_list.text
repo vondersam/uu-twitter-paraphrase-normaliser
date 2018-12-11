@@ -1,17 +1,22 @@
+DONE -  When calculating similarities, we can directly separate every two sentences and print them to file. we can also separate into several files
 DONE Script to separate source and target
-DONE Turned off -distortion-limit
-# Prunning of corpus with a significance test
-# Filter out sentences that map from invocabulary to outvocabulary ASPELL
+DONE Filter sentence pairs that are too distance from each other (more than 4 words)
+DONE Filter out sentences that map from invocabulary to outvocabulary ASPELL
 
-# Filter sentence pairs that are too distance from each other (more than 6 words)
+# Significance test for tweets grouped by ner
+# Prunning of phrase table with a significance test
+# Integrate dictionary
 # lexical similarity penalty
 TODO: CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraining
+TODO Turned off -distortion-limit
 
-
+# extract periods at the end of sentence
 
 # Testing
 1.- CER and BLEU scores for how well the training model generalises:
     We need to split the corpus in training and dev set
+
+
 2.- Apply to the Shared Task
 # Quality evaluation (looking at specific cases why some happens)
 # Quantity evaluation from the shared task
@@ -21,5 +26,4 @@ TODO: CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraini
 - try to clean up the data better (still some emojis and strange symbols showing)
 - still some tweets show incomplete (with ... at the end)
 - We can use gz
-DONE -  When calculating similarities, we can directly separate every two sentences and print them to file. we can also separate into several files
 

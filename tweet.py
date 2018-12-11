@@ -75,8 +75,37 @@ class Tweet:
     def oov_words(self):
         """ Return number of out of vocabulary words of the tweet """
         oov = int()
-        for word in self.filter("*").split():
+        for word in self.clean_text.split():
             if not s.check(word):
                 oov += 1
         return oov
+
+    def tweet_len(self):
+        return len(self.clean_text.split())
+
+    def target_filter(self):
+        exps = []
+        exps.append(re.compile(r"(ja|JA)(?=.*\1)"))
+        exps.append(re.compile(r"(\¡)(?=.*\1)"))
+        exps.append(re.compile(r"(\!)(?=.*\1)"))
+        exps.append(re.compile(r"(\¿)(?=.*\1)"))
+        exps.append(re.compile(r"(\?)(?=.*\1)"))
+        exps.append(re.compile(r"([aeiouAEIOU])\1{1,}(?=[aeiouAEIOU].*\1)"))
+
+        filtering_text = self.clean_text
+        for expression in exps:
+            filtering_text = re.sub(expression, "", filtering_text)
+
+        tokens = TweetTokenizer().tokenize(filtering_text)
+        return " ".join(tokens).strip(".")
+
+    def source_filter(self):
+        tokens = TweetTokenizer().tokenize(self.clean_text)
+        return " ".join(tokens).strip(".")
+
+    def word_set(self):
+        tokens = TweetTokenizer().tokenize(self.clean_text)
+        return set(tokens)
+
+
 
