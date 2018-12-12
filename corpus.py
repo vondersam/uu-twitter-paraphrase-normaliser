@@ -21,14 +21,14 @@ class Corpus:
         clean_corpus(input_dir, output_dir, language, foreign)
 
 
-    def get_tweets_by_entity(self, file_path):
-        with open(file_path, 'r') as f:
-            return json.load(f)
-
-
     def group_by_entity(self, input_directory):
         """ Group all tweets by entity """
         return group_entities(input_directory)
+
+
+    def get_tweets_by_entity(self, file_path):
+        with open(file_path, 'r') as f:
+            return json.load(f)
 
 
     def get_tweet_by_id(self, _id, input_directory, inverted_tracker):

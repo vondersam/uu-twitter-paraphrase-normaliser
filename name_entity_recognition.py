@@ -1,13 +1,9 @@
-from random import randrange
 from tweet import Tweet
 from file_manager import load_tracker, save_tracker
 from os import listdir
 import spacy
 import sys
-import json
 import csv
-import itertools
-
 
 nlp = spacy.load('es_core_news_md')
 
