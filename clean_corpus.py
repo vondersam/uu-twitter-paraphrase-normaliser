@@ -25,6 +25,8 @@ def corpus_size(ouput_dir):
     return counter
 
 
+
+
 def extract_id_text(tweet):
     ''' Extract text and id from tweets '''
     if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
@@ -50,6 +52,7 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
     ''' Separates corpora given a language '''
     tracker = load_tracker(output_dir, "cleaning", "tracker.json")
     inv_tracker = load_tracker(output_dir, "cleaning", "inv_tracker.json")
+    counter = 0
 
     for filename in listdir(input_dir):
         if filename not in tracker and filename.endswith(".json"):
@@ -80,6 +83,8 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
                         output_writer_foreign.writerow(['id', 'tweet'])
 
                     for line in input_file:
+                        counter += 1
+                        '''
                         _id, text = extract_id_text(json.loads(line))
                         try:
                             if detect(text) == language:
@@ -108,6 +113,8 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
         save_tracker(output_dir, "cleaning", "inv_tracker.json", inv_tracker)
     print("All tweets extracted")
     return inv_tracker
+                        '''
+    print(counter)
 
 
 

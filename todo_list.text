@@ -2,21 +2,31 @@ DONE -  When calculating similarities, we can directly separate every two senten
 DONE Script to separate source and target
 DONE Filter sentence pairs that are too distance from each other (more than 4 words)
 DONE Filter out sentences that map from invocabulary to outvocabulary ASPELL
+DONE extract periods at the end of sentence
 
-# Significance test for tweets grouped by ner
 # Prunning of phrase table with a significance test
+# Add additionarl entries?
 # Integrate dictionary
 # lexical similarity penalty
 TODO: CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraining
 TODO Turned off -distortion-limit
 
-# extract periods at the end of sentence
 
-# Testing
+
+We further prevent unreasonable
+translations by adding additional entries
+to the phrase table to ensure every phrase has an
+option to remain unchanged during paraphrasing
+and normalization. Without these noise reduction
+steps, our system will produce paraphrases with
+serious errors (e.g. change a person’s last name)
+for 100 out of 200 test tweets in the evaluation in
+§5.1.5.
+
+
+# TESTING
 1.- CER and BLEU scores for how well the training model generalises:
     We need to split the corpus in training and dev set
-
-
 2.- Apply to the Shared Task
 # Quality evaluation (looking at specific cases why some happens)
 # Quantity evaluation from the shared task
