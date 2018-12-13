@@ -5,12 +5,13 @@ DONE Filter out sentences that map from invocabulary to outvocabulary ASPELL
 DONE extract periods at the end of sentence
 DONE CLEAN CORPUS http://www.statmt.org/moses/?n=FactoredTraining.PrepareTraining
 DONE Prunning of phrase table with a significance test
+DONE Turned off -distortion-limit (this is done in tuning)
 
-# Add additionarl entries?
 # Integrate dictionary
+# Add additionarl entries?
 # lexical similarity penalty
 
-TODO Turned off -distortion-limit
+
 
 # TESTING
 1.- CER and BLEU scores for how well the training model generalises:
@@ -25,6 +26,3 @@ TODO Turned off -distortion-limit
 - still some tweets show incomplete (with ... at the end)
 - We can use gz
 
-Implement Jaro winkler
-Implement LCS longest common subsequence
-Implement My own algorithm

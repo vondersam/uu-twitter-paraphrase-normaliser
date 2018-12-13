@@ -13,7 +13,7 @@ def calculate_similarity(docs_list, similarity_type, threshold):
     # Get all possible combinations of tweets that have same NER
     all_combinations = list(combinations(docs_list, 2))
 
-    # Calculate vector similarity of every combination
+    # Filter handles, hashtags, emoticons, etc.
     for tweet_pair in all_combinations:
         tweet_pair[0].filter("*")
         tweet_pair[1].filter("*")
@@ -27,8 +27,6 @@ def calculate_similarity(docs_list, similarity_type, threshold):
                 # Filter out those combinations with excesive word number differences
                 if abs(tweet_pair[0].tweet_len() - tweet_pair[1].tweet_len()) < 4:
 
-                    # Only return those results above the threshold
-
 
                     if similarity_type == "jaccard":
                         settext1 = tweet_pair[0].word_set()
@@ -41,6 +39,7 @@ def calculate_similarity(docs_list, similarity_type, threshold):
                     if similarity_type == "levenshtein":
                         d = damerau_levenshtein_distance(tweet_pair[0].clean_text, tweet_pair[1].clean_text)
 
+                    # Only return those results above the threshold
                     if d < threshold:
                         # Put in source sentences with more oov words and extra filter target
                         if tweet_pair[0].oov_words() > tweet_pair[1].oov_words():
