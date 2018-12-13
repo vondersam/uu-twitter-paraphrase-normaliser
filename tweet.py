@@ -110,7 +110,7 @@ class Tweet:
         return set(tokens)
 
 
-    def ngrams(self, n):
+    def get_ngrams(self, n):
         return list(ngrams(self.clean_text.split(), n))
 
 
