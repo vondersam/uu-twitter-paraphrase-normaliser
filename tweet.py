@@ -2,6 +2,7 @@ import spacy
 import re
 import emoji
 from nltk.tokenize import TweetTokenizer
+from nltk import ngrams
 import aspell
 
 s = aspell.Speller('lang', 'es')
@@ -57,12 +58,8 @@ class Tweet:
 
 
     def tokenize(self):
-        try:
-            tokens = TweetTokenizer().tokenize(self.clean_text)
-            return " ".join(tokens)
-        except Exception as e:
-            print(e)
-            print("Cannot tokenize text")
+        tokens = TweetTokenizer().tokenize(self.clean_text)
+        return tokens
 
 
     def spacyfy(self, *args):
@@ -72,6 +69,7 @@ class Tweet:
         if "clean" in args:
             return nlp(self.filter(*args))
 
+
     def oov_words(self):
         """ Return number of out of vocabulary words of the tweet """
         oov = int()
@@ -80,8 +78,10 @@ class Tweet:
                 oov += 1
         return oov
 
+
     def tweet_len(self):
         return len(self.clean_text.split())
+
 
     def target_filter(self):
         exps = []
@@ -99,13 +99,26 @@ class Tweet:
         tokens = TweetTokenizer().tokenize(filtering_text)
         return " ".join(tokens).strip(".")
 
+
     def source_filter(self):
         tokens = TweetTokenizer().tokenize(self.clean_text)
         return " ".join(tokens).strip(".")
 
+
     def word_set(self):
         tokens = TweetTokenizer().tokenize(self.clean_text)
         return set(tokens)
+
+
+    def ngrams(self, n):
+        return list(ngrams(self.clean_text.split(), n))
+
+
+    def strip_out(self, str):
+        self.clean_text = self.clean_text.replace(str, "").strip()
+
+
+
 
 
 

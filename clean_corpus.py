@@ -84,7 +84,6 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
 
                     for line in input_file:
                         counter += 1
-                        '''
                         _id, text = extract_id_text(json.loads(line))
                         try:
                             if detect(text) == language:
@@ -112,10 +111,8 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
         save_tracker(output_dir, "cleaning", "tracker.json", tracker)
         save_tracker(output_dir, "cleaning", "inv_tracker.json", inv_tracker)
     print("All tweets extracted")
-    return inv_tracker
-                        '''
     print(counter)
-
+    return inv_tracker
 
 
 if __name__ == "__main__":

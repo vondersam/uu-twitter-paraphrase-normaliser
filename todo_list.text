@@ -25,3 +25,6 @@ TODO Turned off -distortion-limit
 - still some tweets show incomplete (with ... at the end)
 - We can use gz
 
+Implement Jaro winkler
+Implement LCS longest common subsequence
+Implement My own algorithm
