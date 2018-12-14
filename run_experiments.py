@@ -12,7 +12,7 @@ final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_deve
 experiments = ["levenshtein"]
 jaccard = [0.5, 0.2]
 jaro_winkler = [0.05]
-levenshtein = [9, 7, 15, 17]
+levenshtein = [5]
 
 c = Corpus()
 print(c.count(corpus))
