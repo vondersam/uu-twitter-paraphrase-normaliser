@@ -1,5 +1,5 @@
 from tweet import Tweet
-from clean_corpus import clean_corpus
+from clean_corpus import clean_corpus, count_tweets
 from name_entity_recognition import group_entities
 from similarity import calculate_similarity, calculate_similarity_ngram
 from file_manager import load_tracker, write_final_files
@@ -94,6 +94,11 @@ class Corpus:
         p.close()
         p.join()
         print("All paraphrases extracted")
+
+
+    def count(self, input_dir):
+        return count_tweets(input_dir)
+
 
 if __name__ == '__main__':
     main()

@@ -41,6 +41,7 @@ def calculate_similarity(docs_list, similarity_type, threshold):
 
                     # Only return those results above the threshold
                     if d < threshold:
+
                         # Put in source sentences with more oov words and extra filter target
                         if tweet_pair[0].oov_words() > tweet_pair[1].oov_words():
                             bi_combination = tweet_pair[0].source_filter(), tweet_pair[1].target_filter()

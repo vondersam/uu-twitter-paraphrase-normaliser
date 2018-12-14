@@ -26,7 +26,6 @@ def corpus_size(ouput_dir):
 
 
 
-
 def extract_id_text(tweet):
     ''' Extract text and id from tweets '''
     if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
@@ -113,6 +112,17 @@ def clean_corpus(input_dir, output_dir, language, foreign=False):
     print("All tweets extracted")
     print(counter)
     return inv_tracker
+
+
+def count_tweets(input_dir):
+    counter = 0
+
+    for filename in listdir(input_dir):
+        filepath = input_dir + filename
+        with open(filepath, 'r') as input_file:
+            for line in input_file:
+                counter += 1
+    return counter
 
 
 if __name__ == "__main__":

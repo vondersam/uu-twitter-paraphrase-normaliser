@@ -9,12 +9,15 @@ corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research
 #corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/test_delete_sm/"
 final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_development/uu-twitter-paraphrase-normaliser/new_experiments/"
 
-experiments = ["jaccard", "jaro_winkler", "levenshtein"]
+experiments = ["levenshtein"]
 jaccard = [0.5, 0.2]
-jaro_winkler = [0.5, 0.2]
-levenshtein = [9, 11, 13]
+jaro_winkler = [0.05]
+levenshtein = [9, 7, 15, 17]
 
 c = Corpus()
+print(c.count(corpus))
+
+'''
 c.create_corpus(corpus, final_corpus, 'es')
 c.group_by_entity(final_corpus)
 
@@ -43,6 +46,7 @@ for experiment in experiments:
 print("The final corpus has these tweets:")
 results = corpus_size(final_corpus + "corpus/")
 print(results)
+'''
 
 # Test MD with normal similarity
 # 19
