@@ -32,6 +32,8 @@ def get_ouput_filenames(filename):
     return output, output_foreign
 
 def write_final_files(output_dir, paraphrases_results, name):
+
+
     ''' Write the final files in two different files '''
     directory = output_dir + "final_files/"
     if not path.exists(directory):

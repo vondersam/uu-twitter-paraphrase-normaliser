@@ -11,7 +11,6 @@ import sys
 from multiprocessing import Pool
 
 
-
 class Corpus:
     def __init__(self):
         self.tweet = None
@@ -46,7 +45,6 @@ class Corpus:
         for _id in id_list:
             t = self.get_tweet_by_id(_id, input_directory, inverted_tracker)
             list_of_tweets.append(Tweet(t))
-
         return list_of_tweets
 
 
@@ -72,27 +70,39 @@ class Corpus:
         results = {}
 
         # Get all entities
-        grouped_entities = self.group_by_entity(input_directory)
-        inverted_tracker = load_tracker(input_directory, "cleaning", "inv_tracker.json")
-        #number_of_splits = 8
-        #print("Dictionary has been split")
-        #list_of_dicts = self.split_dict_equally(entities, number_of_splits)
-        #list_of_numbers = list(range(number_of_splits))
+        #grouped_entities = self.group_by_entity(input_directory)
+        #inverted_tracker = load_tracker(input_directory, "cleaning", "inv_tracker.json")
+
+        filepath = input_directory + "ner_trackers/grouped_entities.json"
+        with open(filepath, 'r') as f1:
+            entities = json.load(f1)
+        print("entities ok")
 
 
-        #for grouped_entities in list_of_dicts:
-            #current = str(list_of_numbers.pop(0))
-            #print(f"{current}/{str(number_of_splits)} processed similarities")
+        filepath = input_directory + "cleaning_trackers/inv_tracker.json"
+        with open(filepath, 'r') as f2:
+            inverted_tracker = json.load(f2)
+        print("in tracker ok")
 
-        # Multiprocessing pool to extract paraphrases faster
-        p = Pool()
-        paraphrases_results = [p.apply_async(calculate_similarity, args=(self.get_tweets_by_ids(id_list, input_directory, inverted_tracker),similarity_type, threshold,)) for entity, id_list in grouped_entities.items()]
+        number_of_splits = 10
+        print("Dictionary has been split")
+        list_of_dicts = self.split_dict_equally(entities, number_of_splits)
+        list_of_numbers = list(range(number_of_splits))
 
 
-        # Write output in source and target files
-        write_final_files(ouput_file, paraphrases_results, "final")
-        p.close()
-        p.join()
+        for grouped_entities in list_of_dicts:
+            current = str(list_of_numbers.pop(0))
+            print(f"{current}/{str(number_of_splits)} processed similarities")
+
+            # Multiprocessing pool to extract paraphrases faster
+            p = Pool()
+            paraphrases_results = [p.apply_async(calculate_similarity, args=(self.get_tweets_by_ids(id_list, input_directory, inverted_tracker),similarity_type, threshold,)) for entity, id_list in grouped_entities.items()]
+
+
+            # Write output in source and target files
+            write_final_files(ouput_file, paraphrases_results, str(current))
+            p.close()
+            p.join()
         print("All paraphrases extracted")
 
 

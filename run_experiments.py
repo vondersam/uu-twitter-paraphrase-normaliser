@@ -6,20 +6,19 @@ from clean_corpus import corpus_size
 # Complete corpus
 corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/original_twitter_corpus/"
 # Corpus MD
-#corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/test_delete_sm/"
-final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_development/uu-twitter-paraphrase-normaliser/new_experiments/"
+#corpus = "/Users/samuelrodriguezmedina/Google Drive/Language Technology/Research and Development/project/corpora/test_delete_md/"
+final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_development/uu-twitter-paraphrase-normaliser/final_experiments/"
+#final_corpus = "/Users/samuelrodriguezmedina/Documents/classes/research_and_development/uu-twitter-paraphrase-normaliser/delete_md/"
 
-experiments = ["levenshtein"]
-jaccard = [0.5, 0.2]
+experiments = ["jaccard", "jaro_winkler", "levenshtein"]
+jaccard = [0.2, 0.5]
 jaro_winkler = [0.05]
-levenshtein = [5]
+levenshtein = [7, 9, 11, 13, 15, 17]
 
 c = Corpus()
-print(c.count(corpus))
+#c.create_corpus(corpus, final_corpus, 'es')
+#c.group_by_entity(final_corpus)
 
-'''
-c.create_corpus(corpus, final_corpus, 'es')
-c.group_by_entity(final_corpus)
 
 def run_experiment(experiment, threshold):
     print(f"{experiment} distance with a {threshold} threshold.")
@@ -46,7 +45,7 @@ for experiment in experiments:
 print("The final corpus has these tweets:")
 results = corpus_size(final_corpus + "corpus/")
 print(results)
-'''
+
 
 # Test MD with normal similarity
 # 19

@@ -8,12 +8,13 @@ from pyxdameraulevenshtein import damerau_levenshtein_distance
 def calculate_similarity(docs_list, similarity_type, threshold):
     ''' Calculate vector similarity of all possible pairs in list '''
     results = list()
-
+    counter = 0
 
     # Get all possible combinations of tweets that have same NER
     all_combinations = list(combinations(docs_list, 2))
 
     # Filter handles, hashtags, emoticons, etc.
+
     for tweet_pair in all_combinations:
         tweet_pair[0].filter("*")
         tweet_pair[1].filter("*")
@@ -50,9 +51,11 @@ def calculate_similarity(docs_list, similarity_type, threshold):
 
                         if bi_combination not in results:
                             results.append(bi_combination)
+                            counter += 1
 
-    sys.stdout.write(f"\rAdding combinations...")
-    sys.stdout.flush()
+
+        sys.stdout.write(f"\rAdding combinations...")
+        sys.stdout.flush()
     return results
 
 

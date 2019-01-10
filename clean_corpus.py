@@ -8,7 +8,6 @@ import string
 
 
 """ Build a cleaned, monolingual corpus iteratively """
-
 def corpus_size(ouput_dir):
     ''' Calculate number of tweets in a directory '''
     print("Calculating the size of the corpus...")
@@ -29,11 +28,11 @@ def corpus_size(ouput_dir):
 def extract_id_text(tweet):
     ''' Extract text and id from tweets '''
     if "retweeted_status" in tweet and "extended_tweet" in tweet["retweeted_status"]:
-        return tweet["id"], tweet["retweeted_status"]["extended_tweet"]["full_text"]
+        return tweet["id_str"], tweet["retweeted_status"]["extended_tweet"]["full_text"]
     elif "extended_tweet" in tweet:
-        return tweet["id"], tweet["extended_tweet"]["full_text"]
+        return tweet["id_str"], tweet["extended_tweet"]["full_text"]
     else:
-        return tweet["id"], tweet["text"]
+        return tweet["id_str"], tweet["text"]
 
 
 def split_sentences(text, _id):

@@ -41,11 +41,13 @@ class Tweet:
             # Hashtags at end of string
             exps.append(re.compile("\s+((?<=^|(?<=[^\S]))#(\S+)\s*)*$"))
 
+
         # Use all filters
         if "*" in args and not exps:
             return self.filter("retweets", "emoticons", "flags", "handles", "urls", "hashtags")
 
         filtering_text = self.raw_text
+
         for expression in exps:
             if expression == "emoticons":
                 filtering_text = ''.join(c for c in filtering_text if c not in emoji.UNICODE_EMOJI)
@@ -55,7 +57,6 @@ class Tweet:
         # Remove extra spaces
         self.clean_text = re.sub(r"\s\s+", ' ', filtering_text.strip())
         return self.clean_text
-
 
     def tokenize(self):
         tokens = TweetTokenizer().tokenize(self.clean_text)
